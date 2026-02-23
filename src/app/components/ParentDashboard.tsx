@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import BottomNav from './BottomNav';
-import { TrendingUp, TrendingDown, DollarSign, ChevronRight, ShoppingBag, Utensils, Gamepad2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, ChevronRight, ShoppingBag, Utensils, Gamepad2, Car, Bell, CreditCard, Send, BarChart3, Shield, Briefcase, Scissors } from 'lucide-react';
 import { Progress } from './ui/progress';
-import { TRANSACTIONS, CHILDREN } from '../data/mockData';
+import { TRANSACTIONS, CHILDREN, NOTIFICATIONS } from '../data/mockData';
 
 export default function ParentDashboard() {
   const [selectedChild, setSelectedChild] = useState('all');
@@ -15,19 +15,37 @@ export default function ParentDashboard() {
       food: <Utensils size={18} aria-hidden="true" />,
       gaming: <Gamepad2 size={18} aria-hidden="true" />,
       allowance: <DollarSign size={18} aria-hidden="true" />,
+      transport: <Car size={18} aria-hidden="true" />,
     };
     return icons[category] || <DollarSign size={18} aria-hidden="true" />;
   };
 
   const combinedBalance = Object.values(CHILDREN).reduce((sum, c) => sum + c.balance, 0);
   const childNames = Object.keys(CHILDREN);
+  const unreadNotifications = NOTIFICATIONS.filter(n => !n.read).length;
 
   return (
     <div className="h-full flex flex-col bg-slate-100">
       {/* Header */}
       <header className="px-6 pt-8 pb-4 bg-white">
-        <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Parent Dashboard</p>
-        <h1 className="text-3xl font-bold text-slate-900">Family Overview</h1>
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Parent Dashboard</p>
+            <h1 className="text-3xl font-bold text-slate-900">Family Overview</h1>
+          </div>
+          <button
+            onClick={() => navigate('/notifications')}
+            className="relative p-2 rounded-full hover:bg-slate-100 transition-colors"
+            aria-label={`Notifications${unreadNotifications > 0 ? `, ${unreadNotifications} unread` : ''}`}
+          >
+            <Bell size={24} className="text-slate-700" />
+            {unreadNotifications > 0 && (
+              <span className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                {unreadNotifications}
+              </span>
+            )}
+          </button>
+        </div>
       </header>
 
       {/* Scrollable Content */}
@@ -80,6 +98,30 @@ export default function ParentDashboard() {
             </button>
           </div>
         </div>
+
+        {/* Quick Actions */}
+        <section className="px-6 py-2" aria-label="Quick actions">
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: 'Cards', icon: <CreditCard size={20} />, path: '/parent/cards', color: 'bg-blue-50 text-blue-600' },
+              { label: 'Transfer', icon: <Send size={20} />, path: '/parent/transfers', color: 'bg-purple-50 text-purple-600' },
+              { label: 'Analytics', icon: <BarChart3 size={20} />, path: '/parent/analytics', color: 'bg-green-50 text-green-600' },
+              { label: 'Safety', icon: <Shield size={20} />, path: '/parent/safety', color: 'bg-rose-50 text-rose-600' },
+              { label: 'Deposit', icon: <Briefcase size={20} />, path: '/parent/direct-deposit', color: 'bg-amber-50 text-amber-600' },
+              { label: 'Split Bill', icon: <Scissors size={20} />, path: '/parent/bill-split', color: 'bg-teal-50 text-teal-600' },
+            ].map((action) => (
+              <button
+                key={action.label}
+                onClick={() => navigate(action.path)}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl ${action.color} hover:opacity-80 transition-all active:scale-95`}
+                aria-label={action.label}
+              >
+                {action.icon}
+                <span className="text-xs font-medium">{action.label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
 
         {/* Balance Overview */}
         <section className="px-6 py-2" aria-label="Balance overview">

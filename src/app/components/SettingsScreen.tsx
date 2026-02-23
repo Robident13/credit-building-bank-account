@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import BottomNav from './BottomNav';
 import { ChevronRight, Check, Star } from 'lucide-react';
 
@@ -52,6 +53,7 @@ function SettingsSection({ label, children }: SettingsSectionProps) {
 }
 
 export default function SettingsScreen() {
+  const navigate = useNavigate();
   return (
     <div className="h-full flex flex-col bg-slate-50">
       {/* Header */}
@@ -65,20 +67,24 @@ export default function SettingsScreen() {
         {/* Current Plan */}
         <section className="px-6 pt-6 pb-4" aria-label="Current plan">
           <p className="text-xs text-slate-500 uppercase tracking-wide mb-3">Current Plan</p>
-          <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl p-5 text-white relative overflow-hidden">
+          <button
+            onClick={() => navigate('/settings/subscription')}
+            className="w-full bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl p-5 text-white relative overflow-hidden text-left hover:from-slate-600 hover:to-slate-700 transition-all"
+          >
             <div className="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
               <Star size={12} fill="currentColor" aria-hidden="true" />
               ACTIVE
             </div>
             <h2 className="text-2xl font-bold mb-1">Family Pro</h2>
             <p className="text-sm opacity-90">AED 49 / month · 2 children</p>
-          </div>
+            <p className="text-xs opacity-60 mt-2">Tap to manage subscription &rarr;</p>
+          </button>
         </section>
 
         {/* Account Section */}
         <SettingsSection label="Account">
           <SettingsItem emoji="👤" bg="bg-amber-100" title="Profile & KYC" subtitle="Verified" subtitleColor="text-green-600" />
-          <SettingsItem emoji="🔔" bg="bg-orange-100" title="Notifications" subtitle="All alerts on" />
+          <SettingsItem emoji="🔔" bg="bg-orange-100" title="Notifications" subtitle="All alerts on" onClick={() => navigate('/notifications')} />
           <SettingsItem emoji="🌐" bg="bg-blue-100" title="Language" subtitle="English / عربي" isLast />
         </SettingsSection>
 

@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router';
 import BottomNav from './BottomNav';
 import { CheckCircle2, Lock, PlayCircle, Trophy } from 'lucide-react';
 import { Progress } from './ui/progress';
 import { LEARNING_MODULES } from '../data/mockData';
 
 export default function LearnScreen() {
+  const navigate = useNavigate();
   const completedModules = LEARNING_MODULES.filter(m => m.completed).length;
   const totalModules = LEARNING_MODULES.length;
   const progressPercent = (completedModules / totalModules) * 100;
@@ -112,10 +114,11 @@ export default function LearnScreen() {
                 </div>
                 {!module.locked && !module.completed && (
                   <button
+                    onClick={() => navigate(`/learn/mission/${module.id}`)}
                     className="w-full mt-3 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors focus-visible:outline-2 focus-visible:outline-blue-600"
                     aria-label={`Start learning: ${module.title}`}
                   >
-                    Start Learning
+                    {module.quiz && module.quiz.length > 0 ? 'Start Mission' : 'Start Learning'}
                   </button>
                 )}
                 {module.completed && (
